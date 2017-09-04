@@ -1,20 +1,20 @@
 'use strict';
 
 /**
- * [map description]
- * @type {Map} map
+ * Save each $listener with $instance
+ * @type {Map<$instance: $listener>} map
  */
 const map = new Map;
 
 /**
- * [noop description]
+ * Noop
  */
 const noop = () => {};
 
 /**
- * [safe description]
- * @param {[type]} method [description]
- * @param {[type]} args   [description]
+ * Invoke method safely
+ * @param {Function} method
+ * @param {Arguments} args
  */
 const safe = ( method, ...args ) => {
     try {
@@ -25,8 +25,9 @@ const safe = ( method, ...args ) => {
 };
 
 /**
- * [ProxyAll description]
- * @param {[type]} [$listener=noop] [description]
+ * Return an instance of ProxyAll
+ * @param {Function} $listener
+ * @return {Proxy} $instance
  */
 function ProxyAll ( $listener = noop ) {
 
