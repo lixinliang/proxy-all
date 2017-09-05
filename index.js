@@ -39,8 +39,7 @@ function ProxyAll ( $listener = noop ) {
          */
         get ( target, key ) {
             const type = 'getter';
-            safe(map.get($instance), { type, key });
-            return ProxyFunction(key);
+            return safe(map.get($instance), { type, key }) || ProxyFunction(key);
         },
         /**
          * Handler of setter
@@ -50,8 +49,7 @@ function ProxyAll ( $listener = noop ) {
          */
         set ( target, key, receiver ) {
             const type = 'setter';
-            safe(map.get($instance), { type, key, receiver });
-            return receiver;
+            return safe(map.get($instance), { type, key, receiver }) || receiver;
         },
     };
 
@@ -65,8 +63,7 @@ function ProxyAll ( $listener = noop ) {
             function ( ...args ) {
                 const self = this;
                 const type = 'caller';
-                safe(map.get($instance), { type, key, self, args });
-                return ProxyFunction(key);
+                return safe(map.get($instance), { type, key, self, args }) || ProxyFunction(key);
             },
             handler,
         )
