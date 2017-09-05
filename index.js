@@ -26,17 +26,16 @@ const safe = ( method, ...args ) => {
 
 /**
  * Return an instance of ProxyAll
- * @param {Function} $listener
+ * @param  {Function} $listener
  * @return {Proxy} $instance
  */
 function ProxyAll ( $listener = noop ) {
 
     const handler = {
         /**
-         * [get description]
-         * @param  {[type]} target [description]
-         * @param  {[type]} key    [description]
-         * @return {[type]}        [description]
+         * Handler of getter
+         * @param  {String} key property name
+         * @return {Proxy} anonymous proxy
          */
         get ( target, key ) {
             const type = 'getter';
@@ -44,10 +43,10 @@ function ProxyAll ( $listener = noop ) {
             return ProxyFunction(key);
         },
         /**
-         * [set description]
-         * @param {[type]} target   [description]
-         * @param {[type]} key      [description]
-         * @param {[type]} receiver [description]
+         * Handler of setter
+         * @param  {String} key property name
+         * @param  {Any} receiver rightt-hand side in assignment
+         * @return {Any} receiver
          */
         set ( target, key, receiver ) {
             const type = 'setter';
@@ -57,8 +56,9 @@ function ProxyAll ( $listener = noop ) {
     };
 
     /**
-     * [ProxyFunction description]
-     * @param {[type]} key [description]
+     * Anonymous proxy factory
+     * @param  {String} key property name
+     * @return {Proxy} anonymous proxy
      */
     const ProxyFunction = ( key ) =>
         new Proxy(
@@ -80,19 +80,17 @@ function ProxyAll ( $listener = noop ) {
 }
 
 /**
- * [listen description]
- * @param  {[type]} $instance [description]
- * @param  {[type]} $listener [description]
- * @return {[type]}           [description]
+ * Setting $listener
+ * @param {Proxy} $instance
+ * @param {Function} $listener
  */
 ProxyAll.listen = function listen ( $instance, $listener ) {
     map.set($instance, $listener);
 };
 
 /**
- * [error description]
- * @param  {[type]} err [description]
- * @return {[type]}     [description]
+ * Setting error handler
+ * @param {Object} err message
  */
 ProxyAll.error = function error ({ err }) {
     console.error(err);
