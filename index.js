@@ -108,10 +108,4 @@ ProxyAll.error = function error ({ err }) {
     console.error(err);
 };
 
-// export default ProxyAll;
-
-window.sdk = new ProxyAll();
-
-ProxyAll.listen(sdk, ( value, path ) => {
-    console.log(value, path);
-});
+export default ProxyAll;
