@@ -31,45 +31,60 @@ const safe = ( method, ...args ) => {
  */
 function ProxyAll ( $listener = noop ) {
 
-    const handler = {
-        /**
-         * Handler of getter
-         * @param  {String} key property name
-         * @return {Proxy} anonymous proxy
-         */
-        get ( target, key ) {
-            const type = 'getter';
-            return safe(map.get($instance), { type, key }) || ProxyFunction(key);
-        },
-        /**
-         * Handler of setter
-         * @param  {String} key property name
-         * @param  {Any} receiver rightt-hand side in assignment
-         * @return {Any} receiver
-         */
-        set ( target, key, receiver ) {
-            const type = 'setter';
-            return safe(map.get($instance), { type, key, receiver }) || receiver;
-        },
-    };
+    /**
+     * Proxy handler factory
+     * @param  {Array} path
+     * @return {Object} handler
+     */
+    const HandlerFactory = ( path = [] ) => (
+        {
+            /**
+             * Handler of getter
+             * @param  {Any} target
+             * @param  {String} key property name
+             * @return {Any|Proxy} anonymous proxy
+             */
+            get ( target, key ) {
+                const type = 'getter';
+                const $value = Object.freeze({ type, key });
+                const $path = path.concat($value);
+                return safe(map.get($instance), $value, $path) || ProxyFactory(key, $path);
+            },
+            /**
+             * Handler of setter
+             * @param  {Any} target
+             * @param  {String} key property name
+             * @param  {Any} receiver rightt-hand side in assignment
+             * @return {Any} receiver
+             */
+            set ( target, key, receiver ) {
+                const type = 'setter';
+                const $value = Object.freeze({ type, key, receiver });
+                const $path = path.concat($value);
+                return safe(map.get($instance), $value, $path) || receiver;
+            },
+        }
+    );
 
     /**
      * Anonymous proxy factory
      * @param  {String} key property name
-     * @return {Proxy} anonymous proxy
+     * @return {Any|Proxy} anonymous proxy
      */
-    const ProxyFunction = ( key ) =>
+    const ProxyFactory = ( key, path = [] ) =>
         new Proxy(
             function ( ...args ) {
                 const self = this;
                 const type = 'caller';
-                return safe(map.get($instance), { type, key, self, args }) || ProxyFunction(key);
+                const $value = Object.freeze({ type, key, self, args });
+                const $path = path.concat($value);
+                return safe(map.get($instance), $value, $path) || ProxyFactory(key, $path);
             },
-            handler,
+            HandlerFactory(path),
         )
     ;
 
-    const $instance = new Proxy({}, handler);
+    const $instance = new Proxy({}, HandlerFactory());
 
     ProxyAll.listen($instance, $listener);
 
@@ -93,4 +108,10 @@ ProxyAll.error = function error ({ err }) {
     console.error(err);
 };
 
-export default ProxyAll;
+// export default ProxyAll;
+
+window.sdk = new ProxyAll();
+
+ProxyAll.listen(sdk, ( value, path ) => {
+    console.log(value, path);
+});
