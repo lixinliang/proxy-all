@@ -80,7 +80,7 @@ function ProxyAll ( $listener = noop ) {
                 const $path = path.concat($value);
                 return safe(map.get($instance), $value, $path) || ProxyFactory(key, $path);
             },
-            HandlerFactory(path),
+            HandlerFactory(path)
         )
     ;
 
