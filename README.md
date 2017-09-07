@@ -1,3 +1,9 @@
+[![npm](https://img.shields.io/npm/l/proxy-all.svg)](https://www.npmjs.org/package/proxy-all)
+[![npm](https://img.shields.io/npm/v/proxy-all.svg)](https://www.npmjs.org/package/proxy-all)
+[![npm](https://img.shields.io/npm/dm/proxy-all.svg)](https://www.npmjs.org/package/proxy-all)
+[![Travis CI](https://img.shields.io/travis/lixinliang/proxy-all.svg)](https://travis-ci.org/lixinliang/muse-vue)
+[![Twitter](https://img.shields.io/badge/twitter-@qq393464140-blue.svg)](http://twitter.com/qq393464140)
+
 # proxy-all
 > Proxy all properties as anonymous function, including the properties and return value of this function.
 
